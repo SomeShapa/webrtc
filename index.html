@@ -1,0 +1,60 @@
+<html>
+      <head>
+        <title>Vidyo Sample</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+      </head>
+      <body>
+        <script>
+        var vidyoConnector;
+      
+         // Callback method when VidyoIO is done loading (pointer to this method is passed in the onload parameter while including the
+         // VidyoClient.js file)
+          function onVidyoClientLoaded(status) {
+            alert("VidyoClient load state - " + status.state);
+            if (status.state == "READY") {
+              VC.CreateVidyoConnector({
+                viewId:"renderer", // Div ID where the composited video will be rendered, see VidyoConnector.html;
+                viewStyle:"VIDYO_CONNECTORVIEWSTYLE_Default", // Visual style of the composited renderer
+                remoteParticipants:10, // Maximum number of participants to render
+                logFileFilter:"error",
+                logFileName:"",
+                userData:""
+              }).then(function (vc) {
+                alert("Create success");
+                vidyoConnector = vc;
+              }).catch(function(error){      
+                alert("Create error");
+              });
+            }
+          }
+      
+          function joinCall(){
+            document.body.style.backgroundColor = '#6DAF45';
+
+            // To join a video conference call Connect method
+            vidyoConnector.Connect({
+              host:"prod.vidyo.io",  // Server name, for most production apps it will be prod.vidyo.io
+              token:"cHJvdmlzaW9uAGRlbW91c2VyXzVjMDA0ZEBiYThmOTYudmlkeW8uaW8ANjM2NzUzODk2NDEAADI2Mzg0MzRlZTkyYmUyYjBiMTZjMDZhYjNhYTRjODk4YTEyNDU2ZDA1YWFhZjM5N2ZjNzUxMTIwMzk2MGUwZWYwNDc2YjA4OGI1YzcxN2VjMDRkNTU5YzQzMzhjMjNjZg%3D%3D",          // Add generated token (https://developer.vidyo.io/documentation/4-1-16-8/getting-started#Tokens)
+              displayName:"Sachin",  // Display name
+              resourceId:"demoRoom", // Room name
+              onSuccess: function(){
+                alert("Connected!! YAY!");
+              },
+              onFailure: function(reason){
+                alert("Connection failed");
+              },
+              onDisconnected: function(reason) {
+                alert(" disconnected - " + reason);
+              }
+            })
+          }
+      
+        </script>
+        // Including the Vidyo.io package by adding the javascript path.
+        <script src="https://static.vidyo.io/latest/javascript/VidyoClient/VidyoClient.js?onload=onVidyoClientLoaded"></script>
+       <h3>Hello Vidyo!</h3>
+       <button onclick="joinCall()">Connect</button>
+       // Div where the video conference will be rendered
+       <div id="renderer"></div>
+      </body>
+      </html>
